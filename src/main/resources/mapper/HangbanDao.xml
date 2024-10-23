@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.HangbanDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.hangban_name as hangbanName
+        ,a.hangban_uuid_number as hangbanUuidNumber
+        ,a.hangban_photo as hangbanPhoto
+        ,a.hangban_address as hangbanAddress
+        ,a.hangban_types as hangbanTypes
+        ,a.hangban_paodao as hangbanPaodao
+        ,a.hangban_chaoxaing as hangbanChaoxaing
+        ,a.hangban_time as hangbanTime
+        ,a.hangban_zhuangtai_types as hangbanZhuangtaiTypes
+        ,a.hangban_content as hangbanContent
+        ,a.hangban_delete as hangbanDelete
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.HangbanView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+
+        FROM hangban  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.hangbanName != '' and params.hangbanName != null and params.hangbanName != 'null' ">
+                and a.hangban_name like CONCAT('%',#{params.hangbanName},'%')
+            </if>
+            <if test=" params.hangbanUuidNumber != '' and params.hangbanUuidNumber != null and params.hangbanUuidNumber != 'null' ">
+                and a.hangban_uuid_number like CONCAT('%',#{params.hangbanUuidNumber},'%')
+            </if>
+            <if test=" params.hangbanAddress != '' and params.hangbanAddress != null and params.hangbanAddress != 'null' ">
+                and a.hangban_address like CONCAT('%',#{params.hangbanAddress},'%')
+            </if>
+            <if test="params.hangbanTypes != null and params.hangbanTypes != ''">
+                and a.hangban_types = #{params.hangbanTypes}
+            </if>
+            <if test="params.hangbanPaodaoStart != null and params.hangbanPaodaoStart != ''">
+                <![CDATA[  and a.hangban_paodao >= #{params.hangbanPaodaoStart}   ]]>
+            </if>
+            <if test="params.hangbanPaodaoEnd != null and params.hangbanPaodaoEnd != ''">
+                <![CDATA[  and a.hangban_paodao <= #{params.hangbanPaodaoEnd}   ]]>
+            </if>
+             <if test="params.hangbanPaodao != null and params.hangbanPaodao != ''">
+                and a.hangban_paodao = #{params.hangbanPaodao}
+             </if>
+            <if test=" params.hangbanChaoxaing != '' and params.hangbanChaoxaing != null and params.hangbanChaoxaing != 'null' ">
+                and a.hangban_chaoxaing like CONCAT('%',#{params.hangbanChaoxaing},'%')
+            </if>
+            <if test=" params.hangbanTimeStart != '' and params.hangbanTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.hangban_time) >= UNIX_TIMESTAMP(#{params.hangbanTimeStart}) ]]>
+            </if>
+            <if test=" params.hangbanTimeEnd != '' and params.hangbanTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.hangban_time) <= UNIX_TIMESTAMP(#{params.hangbanTimeEnd}) ]]>
+            </if>
+            <if test="params.hangbanTime != null and params.hangbanTime != ''">
+                and a.hangban_time = #{params.hangbanTime}
+            </if>
+            <if test="params.hangbanZhuangtaiTypes != null and params.hangbanZhuangtaiTypes != ''">
+                and a.hangban_zhuangtai_types = #{params.hangbanZhuangtaiTypes}
+            </if>
+            <if test=" params.hangbanContent != '' and params.hangbanContent != null and params.hangbanContent != 'null' ">
+                and a.hangban_content like CONCAT('%',#{params.hangbanContent},'%')
+            </if>
+            <if test="params.hangbanDeleteStart != null and params.hangbanDeleteStart != ''">
+                <![CDATA[  and a.hangban_delete >= #{params.hangbanDeleteStart}   ]]>
+            </if>
+            <if test="params.hangbanDeleteEnd != null and params.hangbanDeleteEnd != ''">
+                <![CDATA[  and a.hangban_delete <= #{params.hangbanDeleteEnd}   ]]>
+            </if>
+             <if test="params.hangbanDelete != null and params.hangbanDelete != ''">
+                and a.hangban_delete = #{params.hangbanDelete}
+             </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+            <if test="params.insertTime != null and params.insertTime != ''">
+                and a.insert_time = #{params.insertTime}
+            </if>
+
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>
